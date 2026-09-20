@@ -40,7 +40,7 @@ const state = {
   localVotes: 3,
   photoIndex: 0,
   eventsExpanded: false,
-  timerSeconds: 10 * 60,
+  timerSeconds: 5 * 60,
 };
 
 let autoStartTimeout;
@@ -75,7 +75,7 @@ function setScene(scene) {
   const previousScene = state.scene;
   if (scene === "profile" && previousScene !== "profile") state.profileReturnScene = previousScene;
   state.scene = normalizeScene(scene);
-  if (state.scene === "voting" && previousScene !== "voting") state.timerSeconds = 10 * 60;
+  if (state.scene === "voting" && previousScene !== "voting") state.timerSeconds = 5 * 60;
   syncUrl();
   render();
   window.scrollTo({top: 0, behavior: "smooth"});
@@ -211,7 +211,7 @@ function configurationSummary() {
       <div class="control-list">
         <div><span>Предварительно подходит</span><strong>34 заведения</strong></div>
         <div><span>Будет выбрано</span><strong>до 20</strong></div>
-        <div><span>Длительность этапа</span><strong>10 минут</strong></div>
+        <div><span>Длительность этапа</span><strong>5 минут</strong></div>
       </div>
       <p class="helper">Фактический список фиксируется только после свежей проверки фотографий.</p>
     </div>`;
@@ -253,7 +253,7 @@ function primaryActions(scene, layout = "focus") {
   }
   if (scene === "expired") {
     return state.role === "host"
-      ? `<div class="${gridClass}"><button class="button secondary" data-action="extend">Ещё 10 минут</button><button class="button primary" data-scene="match">Завершить этап</button></div>`
+      ? `<div class="${gridClass}"><button class="button secondary" data-action="extend">Ещё 5 минут</button><button class="button primary" data-scene="match">Завершить этап</button></div>`
       : `<div class="${gridClass}"><button class="button secondary ${wide}" disabled>Организатор решает: продлить или завершить</button></div>`;
   }
   if (scene === "match") {
@@ -272,7 +272,7 @@ function focusContent(scene) {
   if (scene === "join") return `<div><p class="eyebrow">Приглашение</p><h1>Войти в группу</h1><p class="muted">Попросите организатора прислать короткий код.</p></div>${joinForm()}`;
   if (scene === "configuring") return `<div><p class="eyebrow">Совместный выбор · M7K-4QA</p><h1>${state.role === "host" ? "Настройте поиск" : "Группа собирается"}</h1><div class="focus-code">M7K-4QA</div></div><div class="stack"><div class="control-card-row">${avatars()}<strong>4 участника</strong></div>${configurationSummary()}${primaryActions(scene)}</div>`;
   if (scene === "loading") return `<div class="empty-illustration">↻</div><div><p class="eyebrow">Фиксируем список</p><h1>Проверяем 34 заведения</h1><p class="muted">Обновляем фотографии, доступность и соответствие фильтрам. Совместный выбор остаётся на этапе настройки.</p></div><div class="progress" style="--progress: 68%"><span></span></div><button class="button primary" data-scene="voting">Показать успешную проверку</button>`;
-  if (scene === "voting") return `${placeContent()}<div class="control-card-row"><span class="chip">Осталось 07:41</span><span class="helper">Вы оценили ${state.localVotes}/10</span></div>${primaryActions(scene)}`;
+  if (scene === "voting") return `${placeContent()}<div class="control-card-row"><span class="chip">Осталось 04:12</span><span class="helper">Вы оценили ${state.localVotes}/10</span></div>${primaryActions(scene)}`;
   if (scene === "offline") return `<div class="empty-illustration">⌁</div><div><p class="eyebrow">Оценка сохранена на устройстве</p><h1>Связь потеряна</h1><p class="muted">Сначала загрузим актуальное состояние. До синхронизации новые оценки недоступны.</p></div><div class="notice">Результат последней оценки пока не подтверждён. После восстановления связи повторим тот же запрос.</div>${primaryActions(scene)}`;
   if (scene === "expired") return `<div><p class="eyebrow">Этап 1 из 2</p><h1>Время вышло</h1><p class="muted">Оценки приостановлены. Пропущенные оценки станут отрицательными, только если организатор завершит этап.</p></div><div class="control-card-row"><div class="metric"><strong>31/40</strong><span>оценок получено</span></div><div class="metric"><strong>4</strong><span>участника</span></div></div>${primaryActions(scene)}`;
   if (scene === "match") return `${placeContent()}<div><p class="eyebrow">Совпадение найдено</p><h1>Вся группа за Lila</h1><p class="muted">Совпадение не является бронированием. ${state.role === "host" ? "Подтвердите заведение или продолжите поиск." : "Организатор выбирает: подтвердить или продолжить."}</p></div>${primaryActions(scene)}`;
@@ -311,7 +311,7 @@ function renderControl() {
       <header class="control-header">
         <div class="control-header-row"><span class="brand">DINDER</span>${statusPill()}</div>
         <div class="control-header-row"><div><strong>${state.scene === "home" || state.scene === "join" ? "Гость" : "Совместный выбор M7K-4QA"}</strong><div class="muted">${roleName()}</div></div>${state.scene === "home" || state.scene === "join" ? "" : avatars()}</div>
-        <div class="control-metrics"><div class="metric"><strong>${["home", "join"].includes(state.scene) ? "—" : "4"}</strong><span>Участники</span></div><div class="metric"><strong>${["voting", "offline", "expired"].includes(state.scene) ? "1/2" : "—"}</strong><span>Этап</span></div><div class="metric"><strong>${state.scene === "voting" ? "07:41" : state.scene === "expired" ? "00:00" : "—"}</strong><span>Таймер</span></div></div>
+        <div class="control-metrics"><div class="metric"><strong>${["home", "join"].includes(state.scene) ? "—" : "4"}</strong><span>Участники</span></div><div class="metric"><strong>${["voting", "offline", "expired"].includes(state.scene) ? "1/2" : "—"}</strong><span>Этап</span></div><div class="metric"><strong>${state.scene === "voting" ? "04:12" : state.scene === "expired" ? "00:00" : "—"}</strong><span>Таймер</span></div></div>
       </header>
       <div class="control-content">${dashboardMain(state.scene)}${domainStateDebug()}</div>
     </main>`;
@@ -467,7 +467,7 @@ function settingsPanel() {
   return `
     <section class="control-card hybrid-priority">
       <p class="eyebrow">Шаг 2 из 2</p><h2>Общие параметры</h2>
-      <div class="setting-row"><span><strong>Длительность этапа</strong><small>После окончания можно продлить</small></span><div class="segmented"><button data-action="select-duration">5 мин</button><button class="selected" data-action="select-duration">10 мин</button><button data-action="select-duration">15 мин</button></div></div>
+      <div class="setting-row"><span><strong>Длительность этапа</strong><small>После окончания можно продлить</small></span><div class="segmented"><button class="selected" data-action="select-duration">5 мин</button><button data-action="select-duration">10 мин</button><button data-action="select-duration">15 мин</button></div></div>
       <div class="setting-row"><span><strong>Максимум заведений</strong><small>Список фиксируется до завершения</small></span><strong>20</strong></div>
       <div class="setting-row"><span><strong>Вход новых участников</strong><small>Оценки начнутся с текущего этапа</small></span><strong>Разрешён</strong></div>
       <div class="setting-row"><span><strong>Организатор</strong><small>Настраивает и управляет таймером</small></span><strong>Вы</strong></div>
@@ -518,7 +518,7 @@ function hybridExpiredPanel() {
         <h2>Продлить этап или завершить?</h2>
         <p class="muted">Трое из четырёх участников закончили оценку. Девять оценок ещё не получены.</p>
         <div class="control-list"><div><span>Получено группой</span><strong>31 из 40</strong></div><div><span>Завершили этап</span><strong>3 из 4</strong></div></div>
-        <div class="notice info">При завершении пропущенные оценки будут засчитаны как «Не подходит». При продлении участники получат ещё 10 минут.</div>
+        <div class="notice info">При завершении пропущенные оценки будут засчитаны как «Не подходит». При продлении участники получат ещё 5 минут.</div>
         ${primaryActions("expired", "control")}
       </section>`;
   }
@@ -527,7 +527,7 @@ function hybridExpiredPanel() {
       <p class="eyebrow">Ожидаем решение организатора</p>
       <h2>Вы оценили ${state.localVotes} из 10 заведений</h2>
       <div class="personal-progress" aria-label="Ваш прогресс: ${state.localVotes} из 10"><div class="progress" style="--progress:${state.localVotes * 10}%"><span></span></div><strong>${10 - state.localVotes} без оценки</strong></div>
-      <div class="decision-explainer"><div><span>Если этап продлят</span><strong>Появится ещё 10 минут, чтобы закончить</strong></div><div><span>Если этап завершат</span><strong>Пропущенные заведения получат «Не подходит»</strong></div></div>
+      <div class="decision-explainer"><div><span>Если этап продлят</span><strong>Появится ещё 5 минут, чтобы закончить</strong></div><div><span>Если этап завершат</span><strong>Пропущенные заведения получат «Не подходит»</strong></div></div>
       <div class="notice">Организатор выбирает, что делать дальше. Новые оценки пока недоступны.</div>
     </section>`;
 }
@@ -615,7 +615,7 @@ function hybridMain(scene) {
     if (state.role === "host") return `<section class="control-card hybrid-priority"><p class="eyebrow">Следующее действие</p><h2>Настройте совместный выбор</h2><p class="muted">Участники уже могут присоединяться. Начните с фильтров, затем задайте общие параметры.</p><div class="focus-action"><button class="button primary" data-scene="filters">Настроить фильтры</button><button class="button secondary" data-scene="group">Посмотреть группу</button></div></section>${hybridEvents()}`;
     return `<section class="control-card hybrid-priority"><p class="eyebrow">Ожидание старта</p><h2>Организатор настраивает выбор</h2><div class="organizer-callout"><span class="avatar host-avatar">ОР</span><span><strong>Анна — организатор</strong><small>Сейчас выбирает фильтры</small></span></div><div class="control-card-row">${avatars()}<strong>4 участника</strong></div><button class="button secondary" data-scene="group">Посмотреть группу</button><button class="button ghost" data-action="leave-to-home">Выйти на главную</button></section>${hybridEvents()}`;
   }
-  if (scene === "loading") return `<section class="control-card hybrid-priority"><p class="eyebrow">Автоматический запуск</p><h2>Проверяем заведения</h2><div class="loading-orbit" aria-hidden="true">↻</div><div class="progress" style="--progress:78%"><span></span></div><p>Проверяем фотографии и доступность. После успешной проверки первый этап начнётся автоматически, а таймер запустится с 10:00.</p><div class="notice info">Дополнительное подтверждение организатора не потребуется.</div></section>${hybridEvents()}`;
+  if (scene === "loading") return `<section class="control-card hybrid-priority"><p class="eyebrow">Автоматический запуск</p><h2>Проверяем заведения</h2><div class="loading-orbit" aria-hidden="true">↻</div><div class="progress" style="--progress:78%"><span></span></div><p>Проверяем фотографии и доступность. После успешной проверки первый этап начнётся автоматически, а таймер запустится с 05:00.</p><div class="notice info">Дополнительное подтверждение организатора не потребуется.</div></section>${hybridEvents()}`;
   if (scene === "voting") return hybridVotingPanel();
   if (scene === "detail") return placeDetailsPanel();
   if (scene === "returning") return `<section class="control-card hybrid-priority"><p class="eyebrow">Активный совместный выбор</p><h2>Группа продолжает оценивать</h2><div class="organizer-callout"><span class="avatar host-avatar">ОР</span><span><strong>Анна — организатор</strong><small>4 участника · этап 1 из 2</small></span></div><div class="control-list"><div><span>Ваш прогресс</span><strong>3 из 10</strong></div></div><button class="button primary" data-scene="voting">Вернуться к оценкам</button><button class="button ghost" data-action="leave-to-home">Остаться на главной</button></section>`;
