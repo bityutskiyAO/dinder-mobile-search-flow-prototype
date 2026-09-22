@@ -17,10 +17,12 @@
 
 ## Быстрый запуск
 
-Требуется только Python 3. Из корня репозитория выполнить:
+Онлайн-версия: <https://bityutskiyAO.github.io/dinder-mobile-search-flow-prototype/?variant=D&scene=home&role=host&identity=guest>.
+
+Для локального запуска требуется только Python 3. Из корня этого репозитория выполнить:
 
 ```sh
-python3 -m http.server 4173 --directory prototypes/mobile-search-flow
+python3 -m http.server 4173
 ```
 
 Основной кандидат:
